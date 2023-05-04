@@ -14,7 +14,6 @@ namespace ViewModel
         private readonly IExport _exportService;
         private readonly IOpenDocument _openDocumentService;
         private bool _isBusy;
-        private bool _canOpen => File.Exists(ExportFile.ExportFilePath);
         public ExportFile ExportFile { get; set; } = new() { ExportType = StiExportFormat.Pdf };
         public Command OpenDocumentCommand
         {
@@ -22,7 +21,7 @@ namespace ViewModel
             {
                 return _openDocumentCommand ??= new Command(async () =>
                 await _openDocumentService.OpenDocument(ExportFile.ExportFilePath),
-                () => _canOpen);
+                () => ExportFile.IsExported);
             }
         }
         public Command ExportCommand
