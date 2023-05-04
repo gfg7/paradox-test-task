@@ -6,22 +6,22 @@ namespace Paradox.Models
 {
     public class ExportFile : NotifyPropertyChangedModel, IDataErrorInfo
     {
-        private string originalFilePath;
-        private string exportFilePath;
-        private StiExportFormat exportType;
-        private string error;
+        private string _originalFilePath;
+        private string _exportFilePath;
+        private StiExportFormat _exportType;
+        private string _error;
 
         public string this[string columnName]
         {
             get
             {
-                error = string.Empty;
+                _error = string.Empty;
                 switch (columnName)
                 {
                     case nameof(OriginalFilePath):
                         if (!File.Exists(OriginalFilePath) && OriginalFilePath is not null)
                         {
-                            error = "Файл не существует или путь не верен";
+                            _error = "Файл не существует или путь не верен";
                         }
                         break;
                     case nameof(ExportFilePath):
@@ -29,12 +29,12 @@ namespace Paradox.Models
                         {
                             if (Path.GetExtension(ExportFilePath) != ".pdf")
                             {
-                                error = "Неверное расширение файла\n";
+                                _error = "Неверное расширение файла\n";
                             }
 
                             if (!Directory.Exists(Path.GetDirectoryName(ExportFilePath)))
                             {
-                                error += "Директория не существует или путь не верен";
+                                _error += "Директория не существует или путь не верен";
                             }
                         }
                         break;
@@ -42,32 +42,32 @@ namespace Paradox.Models
 
                 OnPropertyChanged(nameof(Error));
 
-                return error;
+                return _error;
             }
         }
 
         public string OriginalFilePath
         {
-            get => originalFilePath;
+            get => _originalFilePath;
             set
             {
-                originalFilePath = value;
+                _originalFilePath = value;
                 OnPropertyChanged();
             }
         }
         public string ExportFilePath
         {
-            get => exportFilePath;
+            get => _exportFilePath;
             set
             {
-                exportFilePath = value;
+                _exportFilePath = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsExported));
             }
         }
-        public StiExportFormat ExportType { get => exportType; set => exportType = value; }
+        public StiExportFormat ExportType { get => _exportType; set => _exportType = value; }
 
-        public string Error => error;
+        public string Error => _error;
         public bool IsExported => File.Exists(ExportFilePath);
     }
 }
